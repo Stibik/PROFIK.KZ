@@ -1,0 +1,220 @@
+import type { Category } from './types';
+
+/**
+ * Восемь категорий (Том 2, п. 2.4.2). Подкатегории — по способу выбора
+ * (форма/назначение), а не по материалу. Порядок фильтров не случаен:
+ * сверху то, чем человек ограничен, внизу — цена (Том 2, п. 2.4.2).
+ */
+export const categories: Category[] = [
+  {
+    slug: 'boksyorskie-meshki',
+    name: 'Боксёрские мешки и груши',
+    tagline: 'Изготавливаем в Алматы. Срок от 5 дней. Любые размеры под заказ.',
+    summary:
+      'Мешки цилиндрические, апперкотные, груши-капли, пневмогруши, детские и на растяжках. Собственное производство, изготовление под заказ.',
+    emoji: '🥊',
+    defaultChannel: 'request',
+    madeToOrder: true,
+    customCta: 'Изготовим мешок вашего размера и веса. Скажите параметры — рассчитаем за час.',
+    subcategories: [
+      { slug: 'cilindricheskie', name: 'Мешки цилиндрические' },
+      { slug: 'appperkotnye', name: 'Апперкотные' },
+      { slug: 'grushi-kapli', name: 'Груши-капли' },
+      { slug: 'pnevmogrushi', name: 'Пневмогруши на платформе' },
+      { slug: 'vodonalivnye', name: 'Водоналивные напольные' },
+      { slug: 'detskie', name: 'Детские' },
+      { slug: 'na-rastyazhkah', name: 'На растяжках' },
+    ],
+    filters: [
+      { key: 'weight', label: 'Вес', type: 'range', min: 20, max: 90, step: 5, unit: 'кг' },
+      { key: 'height', label: 'Высота', type: 'range', min: 80, max: 180, step: 10, unit: 'см' },
+      { key: 'diameter', label: 'Диаметр', type: 'checkbox', options: ['25 см', '30 см', '35 см', '40 см'] },
+      { key: 'material', label: 'Материал обшивки', type: 'checkbox', options: ['ПВХ', 'Тент', 'Натуральная кожа', 'Кожзам'] },
+      { key: 'filler', label: 'Наполнитель', type: 'checkbox', options: ['Резиновая крошка', 'Текстиль', 'Песок-опилки', 'Комбинированный'] },
+      { key: 'mount', label: 'Тип крепления', type: 'checkbox', options: ['Цепи', 'Растяжки', 'Кольцо', 'Напольный'] },
+      { key: 'purpose', label: 'Назначение', type: 'checkbox', options: ['Зал', 'Дом', 'Дети', 'Тайский бокс'] },
+      { key: 'availability', label: 'Наличие', type: 'toggle' },
+      { key: 'price', label: 'Цена', type: 'range', min: 0, max: 400000, step: 5000, unit: '₸' },
+    ],
+    faq: [
+      {
+        q: 'Как выбрать вес мешка по весу бойца?',
+        a: 'Ориентир — примерно половина веса бьющего. Для взрослого 70–85 кг подойдёт мешок 35–45 кг. Начинающему берут легче, профессионалу — тяжелее при той же массе тела.',
+      },
+      {
+        q: 'Чем отличаются наполнители?',
+        a: 'Резиновая крошка — плотный, «жёсткий» отклик, для зала. Текстиль мягче, для дома и начинающих. Комбинированный — компромисс. Песок со временем осаживается и твердеет снизу.',
+      },
+      {
+        q: 'Как повесить мешок в квартиру с гипсокартоном?',
+        a: 'Гипсокартон не держит вес мешка. Решение — напольный мешок или модель на растяжках, либо усиление крепления к бетонному перекрытию. Мы подскажем вариант под вашу стену.',
+      },
+      {
+        q: 'Почему мешки рвутся и как этого избежать?',
+        a: 'Основные причины — тонкая обшивка и слабый шов на швах нагрузки. Мы шьём двойным швом по нагруженным зонам и даём гарантию на швы.',
+      },
+    ],
+  },
+  {
+    slug: 'manekeny',
+    name: 'Манекены',
+    tagline: 'Производство в Алматы. Подбираем рост и вес под спортсмена.',
+    summary: 'Борцовские манекены, для ММА и грэпплинга, водоналивные напольные, детские. Главный параметр — рост, подбирается под спортсмена.',
+    emoji: '🤼',
+    defaultChannel: 'request',
+    madeToOrder: true,
+    customCta: 'Изготовим манекен нужного роста и веса. Опишите задачу — рассчитаем.',
+    subcategories: [
+      { slug: 'borcovskie', name: 'Борцовские' },
+      { slug: 'mma', name: 'Для ММА' },
+      { slug: 'vodonalivnye', name: 'Водоналивные напольные' },
+      { slug: 'detskie', name: 'Детские' },
+    ],
+    filters: [
+      { key: 'height', label: 'Рост', type: 'range', min: 120, max: 200, step: 10, unit: 'см' },
+      { key: 'weight', label: 'Вес', type: 'range', min: 10, max: 70, step: 5, unit: 'кг' },
+      { key: 'discipline', label: 'Дисциплина', type: 'checkbox', options: ['Борьба', 'ММА / грэпплинг', 'Общая ФП'] },
+      { key: 'material', label: 'Материал', type: 'checkbox', options: ['ПВХ', 'Натуральная кожа', 'Кожзам'] },
+      { key: 'filler', label: 'Наполнитель', type: 'checkbox', options: ['Текстиль', 'Комбинированный'] },
+      { key: 'price', label: 'Цена', type: 'range', min: 0, max: 500000, step: 5000, unit: '₸' },
+    ],
+    faq: [
+      { q: 'Как подобрать рост манекена?', a: 'Рост манекена подбирают под рост имитируемого соперника — чаще всего под средний рост спортсменов вашей секции. Для взрослой борьбы это обычно 150–170 см.' },
+      { q: 'Чем водоналивной манекен лучше?', a: 'Водоналивной устойчивее и тяжелее — для стационарного зала. Если нужно переносить между залами, берут вариант полегче.' },
+    ],
+  },
+  {
+    slug: 'utyazheliteli',
+    name: 'Утяжелители',
+    tagline: 'Жилеты, манжеты, пояса. Регулируемый вес, прочная фиксация.',
+    summary: 'Жилеты, манжеты на руки и ноги, пояса. Низкий чек, часто добавляют к основному заказу.',
+    emoji: '🏋️',
+    defaultChannel: 'kaspi',
+    madeToOrder: false,
+    subcategories: [
+      { slug: 'zhilety', name: 'Жилеты' },
+      { slug: 'manzhety-ruki', name: 'Манжеты на руки' },
+      { slug: 'manzhety-nogi', name: 'Манжеты на ноги' },
+      { slug: 'poyasa', name: 'Пояса' },
+    ],
+    filters: [
+      { key: 'weight', label: 'Вес', type: 'range', min: 1, max: 30, step: 1, unit: 'кг' },
+      { key: 'adjustable', label: 'Регулируемость', type: 'toggle' },
+      { key: 'fixation', label: 'Тип фиксации', type: 'checkbox', options: ['Липучка', 'Ремни', 'Комбинированная'] },
+      { key: 'size', label: 'Размер', type: 'checkbox', options: ['S', 'M', 'L', 'XL', 'Универсальный'] },
+      { key: 'price', label: 'Цена', type: 'range', min: 0, max: 80000, step: 1000, unit: '₸' },
+    ],
+  },
+  {
+    slug: 'lapy-i-pedy',
+    name: 'Лапы и пэды',
+    tagline: 'Для тренера, а не для бьющего. Износостойкость и удобство держащего.',
+    summary: 'Боксёрские лапы, макивары, тайские пэды, пэды на предплечье. Решающий фактор — износостойкость и удобство принимающего удар.',
+    emoji: '🎯',
+    defaultChannel: 'both',
+    madeToOrder: true,
+    subcategories: [
+      { slug: 'boksyorskie-lapy', name: 'Боксёрские лапы' },
+      { slug: 'makivary', name: 'Макивары' },
+      { slug: 'tajskie-pedy', name: 'Тайские пэды' },
+      { slug: 'pedy-predplechye', name: 'Пэды на предплечье' },
+    ],
+    filters: [
+      { key: 'discipline', label: 'Дисциплина', type: 'checkbox', options: ['Бокс', 'Тайский бокс', 'ММА', 'Универсал'] },
+      { key: 'material', label: 'Материал', type: 'checkbox', options: ['Натуральная кожа', 'ПВХ', 'Кожзам'] },
+      { key: 'size', label: 'Размер', type: 'checkbox', options: ['S', 'M', 'L'] },
+      { key: 'shock', label: 'Наличие амортизации', type: 'toggle' },
+      { key: 'price', label: 'Цена', type: 'range', min: 0, max: 60000, step: 1000, unit: '₸' },
+    ],
+  },
+  {
+    slug: 'nastennye-podushki',
+    name: 'Настенные подушки',
+    tagline: 'Размер под вашу стену. Считаем и изготавливаем под заказ.',
+    summary: 'Настенные ударные подушки любого размера. Размер почти всегда диктуется стеной — изготавливаем нестандарт.',
+    emoji: '🧱',
+    defaultChannel: 'request',
+    madeToOrder: true,
+    customCta: 'Рассчитаем подушку точно под вашу стену. Укажите ширину и высоту.',
+    subcategories: [],
+    filters: [
+      { key: 'width', label: 'Ширина', type: 'range', min: 40, max: 300, step: 10, unit: 'см' },
+      { key: 'height', label: 'Высота', type: 'range', min: 40, max: 250, step: 10, unit: 'см' },
+      { key: 'thickness', label: 'Толщина', type: 'checkbox', options: ['5 см', '8 см', '10 см', '15 см'] },
+      { key: 'material', label: 'Материал', type: 'checkbox', options: ['ПВХ', 'Тент', 'Натуральная кожа'] },
+      { key: 'mount', label: 'Тип крепления', type: 'checkbox', options: ['Люверсы', 'Рейка', 'Кронштейны'] },
+      { key: 'price', label: 'Цена', type: 'range', min: 0, max: 200000, step: 5000, unit: '₸' },
+    ],
+  },
+  {
+    slug: 'pokrytiya-i-maty',
+    name: 'Покрытия и маты',
+    tagline: 'Продаётся площадью. Рассчитаем на площадь вашего зала.',
+    summary: 'Татами, борцовские ковры, маты, покрытия для ринга. Цена за м², есть калькулятор площади.',
+    emoji: '🟥',
+    defaultChannel: 'request',
+    madeToOrder: true,
+    customCta: 'Рассчитаем покрытие на площадь зала. Укажите размеры — дадим смету.',
+    subcategories: [
+      { slug: 'tatami', name: 'Татами' },
+      { slug: 'borcovskie-kovry', name: 'Борцовские ковры' },
+      { slug: 'maty', name: 'Маты' },
+      { slug: 'pokrytiya-ring', name: 'Покрытия для ринга' },
+    ],
+    filters: [
+      { key: 'thickness', label: 'Толщина', type: 'checkbox', options: ['20 мм', '25 мм', '40 мм', '50 мм'] },
+      { key: 'density', label: 'Плотность', type: 'checkbox', options: ['Низкая', 'Средняя', 'Высокая'] },
+      { key: 'purpose', label: 'Назначение', type: 'checkbox', options: ['Борьба', 'ММА', 'Тхэквондо', 'Универсал'] },
+      { key: 'color', label: 'Цвет', type: 'checkbox', options: ['Красный', 'Синий', 'Зелёный', 'Серый'] },
+      { key: 'surface', label: 'Тип поверхности', type: 'checkbox', options: ['Гладкая', 'Тиснёная'] },
+      { key: 'price', label: 'Цена за м²', type: 'range', min: 0, max: 40000, step: 1000, unit: '₸' },
+    ],
+  },
+  {
+    slug: 'perchatki-i-zashchita',
+    name: 'Перчатки и защита',
+    tagline: 'Розница. Покупка на Kaspi в один клик.',
+    summary: 'Боксёрские и снарядные перчатки, ММА, шлемы, щитки, бинты, капы. Самая розничная категория — уводим на Kaspi.',
+    emoji: '🧤',
+    defaultChannel: 'kaspi',
+    madeToOrder: false,
+    subcategories: [
+      { slug: 'boksyorskie', name: 'Боксёрские' },
+      { slug: 'snaryadnye', name: 'Снарядные' },
+      { slug: 'mma', name: 'ММА' },
+      { slug: 'shlemy', name: 'Шлемы' },
+      { slug: 'shhitki', name: 'Щитки' },
+      { slug: 'binty', name: 'Бинты' },
+      { slug: 'kapy', name: 'Капы' },
+    ],
+    filters: [
+      { key: 'oz', label: 'Унции', type: 'checkbox', options: ['6 oz', '8 oz', '10 oz', '12 oz', '14 oz', '16 oz'] },
+      { key: 'size', label: 'Размер', type: 'checkbox', options: ['XS', 'S', 'M', 'L', 'XL'] },
+      { key: 'material', label: 'Материал', type: 'checkbox', options: ['Натуральная кожа', 'Кожзам', 'ПВХ'] },
+      { key: 'discipline', label: 'Дисциплина', type: 'checkbox', options: ['Бокс', 'Тайский бокс', 'ММА'] },
+      { key: 'age', label: 'Возраст', type: 'checkbox', options: ['Взрослые', 'Детские'] },
+      { key: 'price', label: 'Цена', type: 'range', min: 0, max: 60000, step: 1000, unit: '₸' },
+    ],
+    faq: [
+      { q: 'Как подобрать унции перчаток по весу?', a: 'До 60 кг — 10–12 oz, 60–75 кг — 12–14 oz, свыше 75 кг — 14–16 oz. Для снарядной работы берут на 2 oz меньше, чем для спарринга.' },
+    ],
+  },
+  {
+    slug: 'aksessuary',
+    name: 'Аксессуары',
+    tagline: 'Крепёж, цепи, карабины, чехлы, сумки. Всё для дозаказа.',
+    summary: 'Мелочь, крепёж, цепи, карабины, чехлы, сумки. Дозаказ и снятие возражений «а крепление в комплекте?».',
+    emoji: '🔗',
+    defaultChannel: 'kaspi',
+    madeToOrder: false,
+    subcategories: [],
+    filters: [
+      { key: 'type', label: 'Тип', type: 'checkbox', options: ['Крепёж', 'Цепи', 'Карабины', 'Чехлы', 'Сумки'] },
+      { key: 'price', label: 'Цена', type: 'range', min: 0, max: 40000, step: 500, unit: '₸' },
+    ],
+  },
+];
+
+export function getCategory(slug: string): Category | undefined {
+  return categories.find((c) => c.slug === slug);
+}
