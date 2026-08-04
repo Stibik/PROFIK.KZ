@@ -1,0 +1,15 @@
+# Render Blueprint для Profik.kz (Next.js SSR).
+# Это Web Service (Node), а не Static Site — из-за SSR/ISR и роута /api/leads.
+# Как задеплоить: Render → Blueprints → New Blueprint Instance → выбрать репозиторий.
+services:
+  - type: web
+    name: profik-kz
+    runtime: node
+    plan: free            # бесплатный тариф «засыпает» после простоя — для витрины ок
+    region: frankfurt      # ближайший к Казахстану регион Render
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # next start сам слушает порт из переменной PORT, которую задаёт Render
