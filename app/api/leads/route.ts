@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { appendLead } from '@/lib/admin/store';
 
 /**
  * Приём заявки с сайта (Том 0, п. 0.2: POST /api/v1/leads).
@@ -23,14 +24,14 @@ export async function POST(request: Request) {
   }
 
   // TODO: передать в PFS APP (POST /api/v1/leads) или поставить в очередь
-  // при недоступности (Том 4, п. 4.2). Пока — принимаем и логируем.
-  console.log('[lead]', {
+  // при недоступности (Том 4, п. 4.2). Пока — складываем в базу сайта,
+  // откуда заявка видна в админке (раздел «Заявки»).
+  appendLead({
     name,
     phone,
     comment: String(body.comment ?? '').slice(0, 2000),
     source: String(body.source ?? 'site'),
-    sku: body.sku ?? null,
-    at: new Date().toISOString(),
+    sku: body.sku ? String(body.sku) : undefined,
   });
 
   return NextResponse.json({ ok: true });

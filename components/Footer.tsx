@@ -54,7 +54,10 @@ export default function Footer() {
       <div className="border-t border-ink-800">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-steel-500 sm:flex-row sm:items-center">
           <span>© {company.foundedYear}–2026 {company.legalName}. Все права защищены.</span>
-          <span>Цены и наличие уточняйте у менеджера.</span>
+          <span className="flex items-center gap-3">
+            <Link href="/admin" className="hover:text-steel-300">Вход для сотрудников</Link>
+            <span>Цены и наличие уточняйте у менеджера.</span>
+          </span>
         </div>
       </div>
     </footer>

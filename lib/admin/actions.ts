@@ -1,0 +1,152 @@
+'use server';
+
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { requireAuth } from './auth';
+import { writeData, logAction, type Review } from './store';
+import type { SalesChannel } from '../types';
+
+/** Сохранить витринные поля товара (Том 7, п. 7.3). Цены/остатки не трогаем. */
+export async function saveProductOverlay(formData: FormData) {
+  requireAuth();
+  const sku = String(formData.get('sku'));
+  const overlay = {
+    salesChannel: (String(formData.get('salesChannel')) as SalesChannel) || undefined,
+    kaspiUrl: String(formData.get('kaspiUrl') || '') || undefined,
+    description: String(formData.get('description') || '') || undefined,
+    seoTitle: String(formData.get('seoTitle') || '') || undefined,
+    seoDescription: String(formData.get('seoDescription') || '') || undefined,
+    relatedSkus: String(formData.get('relatedSkus') || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
+  };
+  writeData((d) => {
+    d.productOverlays[sku] = overlay;
+  });
+  logAction('Контент-менеджер', `Изменены витринные поля товара ${sku}`);
+  revalidatePath('/admin/products');
+  revalidatePath(`/admin/products/${sku}`);
+  redirect('/admin/products?saved=' + encodeURIComponent(sku));
+}
+
+/** Массовая смена канала продажи (Том 7, п. 7.3) */
+export async function bulkSetChannel(formData: FormData) {
+  requireAuth();
+  const channel = String(formData.get('channel')) as SalesChannel;
+  const skus = formData.getAll('sku').map(String);
+  writeData((d) => {
+    for (const sku of skus) {
+      d.productOverlays[sku] = { ...(d.productOverlays[sku] ?? {}), salesChannel: channel };
+    }
+  });
+  logAction('Контент-менеджер', `Массовая смена канала (${channel}) для ${skus.length} товаров`);
+  revalidatePath('/admin/products');
+  redirect('/admin/products?bulk=' + skus.length);
+}
+
+/** Модерация отзыва (Том 7, п. 7.5) */
+export async function setReviewStatus(formData: FormData) {
+  requireAuth();
+  const id = String(formData.get('id'));
+  const status = String(formData.get('status')) as Review['status'];
+  writeData((d) => {
+    const r = d.reviews.find((x) => x.id === id);
+    if (r) r.status = status;
+  });
+  logAction('Контент-менеджер', `Отзыв ${id} → ${status}`);
+  revalidatePath('/admin/reviews');
+}
+
+export async function replyReview(formData: FormData) {
+  requireAuth();
+  const id = String(formData.get('id'));
+  const reply = String(formData.get('reply') || '');
+  writeData((d) => {
+    const r = d.reviews.find((x) => x.id === id);
+    if (r) r.reply = reply;
+  });
+  logAction('Контент-менеджер', `Ответ на отзыв ${id}`);
+  revalidatePath('/admin/reviews');
+}
+
+/** Добавить отзыв вручную — источник обязателен (Том 7, п. 7.5) */
+export async function addReview(formData: FormData) {
+  requireAuth();
+  const source = String(formData.get('source') || '').trim();
+  const date = String(formData.get('date') || '').trim();
+  if (!source || !date) {
+    // технический барьер: без даты и источника не сохраняем (Том 7, п. 7.5)
+    redirect('/admin/reviews?e=source');
+  }
+  writeData((d) => {
+    d.reviews.unshift({
+      id: 'r' + Date.now().toString(36),
+      sku: String(formData.get('sku') || ''),
+      author: String(formData.get('author') || 'Клиент'),
+      rating: Number(formData.get('rating') || 5),
+      text: String(formData.get('text') || ''),
+      date,
+      source,
+      status: 'pending',
+    });
+  });
+  logAction('Контент-менеджер', 'Добавлен отзыв вручную');
+  revalidatePath('/admin/reviews');
+  redirect('/admin/reviews');
+}
+
+/** Пометить заявку обработанной (Том 7, п. 7.1 — раздел «Заявки») */
+export async function setLeadStatus(formData: FormData) {
+  requireAuth();
+  const id = String(formData.get('id'));
+  const status = String(formData.get('status')) as 'new' | 'processed';
+  writeData((d) => {
+    const l = d.leads.find((x) => x.id === id);
+    if (l) l.status = status;
+  });
+  logAction('Менеджер по продажам', `Заявка ${id} → ${status}`);
+  revalidatePath('/admin/leads');
+}
+
+/** Конструктор главной (Том 7, п. 7.4): порядок, скрытие, публикация. */
+export async function moveHomeBlock(formData: FormData) {
+  requireAuth();
+  const id = String(formData.get('id'));
+  const dir = String(formData.get('dir')); // up | down
+  writeData((d) => {
+    const arr = d.home.draft;
+    const i = arr.findIndex((b) => b.id === id);
+    const j = dir === 'up' ? i - 1 : i + 1;
+    if (i >= 0 && j >= 0 && j < arr.length) [arr[i], arr[j]] = [arr[j], arr[i]];
+  });
+  revalidatePath('/admin/home');
+}
+
+export async function toggleHomeBlock(formData: FormData) {
+  requireAuth();
+  const id = String(formData.get('id'));
+  writeData((d) => {
+    const b = d.home.draft.find((x) => x.id === id);
+    if (b) b.hidden = !b.hidden;
+  });
+  revalidatePath('/admin/home');
+}
+
+export async function publishHome() {
+  requireAuth();
+  writeData((d) => {
+    d.home.published = d.home.draft.map((b) => ({ ...b }));
+  });
+  logAction('Контент-менеджер', 'Опубликована новая версия главной страницы');
+  revalidatePath('/admin/home');
+  revalidatePath('/'); // применяем на живой сайт
+}
+
+export async function resetHomeDraft() {
+  requireAuth();
+  writeData((d) => {
+    d.home.draft = d.home.published.map((b) => ({ ...b }));
+  });
+  revalidatePath('/admin/home');
+}

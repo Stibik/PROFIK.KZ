@@ -3,6 +3,9 @@
 /.pnp
 .pnp.js
 
+# admin data store (prototype persistence)
+/.data
+
 # next.js
 /.next/
 /out/

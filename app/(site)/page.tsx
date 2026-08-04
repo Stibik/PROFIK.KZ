@@ -8,25 +8,39 @@ import { categories } from '@/lib/categories';
 import { taskEntries, articles } from '@/lib/content';
 import { company } from '@/lib/company';
 import { faqLd } from '@/lib/seo';
+import { readData } from '@/lib/admin/store';
 
 /**
  * Главная страница (Том 4). Порядок блоков не произволен (Том 4, п. 4.1):
  * эмоция → разделение по аудитории → товар → доказательства → мягкий призыв.
  * Главная — витрина доверия к компании, а не витрина товаров (Том 4, п. 4.0).
- * Блоки [РЕАЛ] ждут реальной съёмки — структура готова (Том 4, п. 4.5).
+ *
+ * Порядок и видимость блоков управляются конструктором в админке (Том 7, п. 7.4):
+ * рендерим опубликованную конфигурацию. revalidatePath('/') при публикации
+ * обновляет статическую страницу без полной пересборки.
  */
+const BLOCKS: Record<string, () => JSX.Element> = {
+  hero: Hero,
+  audience: AudienceEntries,
+  categories: CategoriesBlock,
+  manufacture: WeManufacture,
+  cases: Cases,
+  madeToOrder: MadeToOrder,
+  numbers: Numbers,
+  knowledge: KnowledgeBlock,
+  finalCta: FinalCta,
+};
+
 export default function HomePage() {
+  const published = readData().home.published;
   return (
     <>
-      <Hero />
-      <AudienceEntries />
-      <CategoriesBlock />
-      <WeManufacture />
-      <Cases />
-      <MadeToOrder />
-      <Numbers />
-      <KnowledgeBlock />
-      <FinalCta />
+      {published
+        .filter((b) => !b.hidden && BLOCKS[b.id])
+        .map((b) => {
+          const Block = BLOCKS[b.id];
+          return <Block key={b.id} />;
+        })}
 
       <JsonLd
         data={faqLd([
