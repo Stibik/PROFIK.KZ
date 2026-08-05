@@ -15,6 +15,14 @@ export default function AdminDashboard() {
         sub="Ключевые показатели за месяц. Визиты и конверсия — GA4, заявки и переходы на Kaspi — база сайта."
       />
 
+      {/* Пометка: пока не подключён GA4, цифры визитов — демонстрационные */}
+      {!process.env.GA4_ID && (
+        <div className="mb-4 rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm text-amber-300">
+          Демонстрационные данные. Подключите Google Analytics 4 (переменная <code className="text-amber-200">GA4_ID</code>),
+          чтобы видеть реальные визиты и конверсию. Заявки и переходы на Kaspi считаются из базы сайта уже сейчас.
+        </div>
+      )}
+
       {/* Верхний ряд KPI */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         {s.kpis.map((k) => (
