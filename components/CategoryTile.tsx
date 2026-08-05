@@ -10,7 +10,7 @@ export default function CategoryTile({ category }: { category: Category }) {
   return (
     <Link
       href={`/catalog/${category.slug}`}
-      className="group card overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-ink-500"
+      className="group card glow-hover overflow-hidden hover:-translate-y-1 hover:border-accent/40"
     >
       <Thumb icon={categoryIcon(category.slug)} ratio="wide" />
       <div className="p-4">

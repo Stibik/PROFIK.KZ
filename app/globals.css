@@ -78,6 +78,16 @@
     @apply rounded-lg border border-ink-700 bg-ink-900;
   }
 
+  /* Свечение при наведении — современный акцент для интерактивных карточек */
+  .glow-hover {
+    @apply transition-[transform,box-shadow,border-color] duration-300;
+  }
+  .glow-hover:hover {
+    box-shadow:
+      0 0 0 1px rgba(225, 29, 42, 0.35),
+      0 18px 40px -16px rgba(225, 29, 42, 0.35);
+  }
+
   .link-underline {
     @apply text-steel-200 underline decoration-ink-500 underline-offset-4
            transition-colors hover:text-white hover:decoration-accent;

@@ -50,10 +50,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <button className="text-sm text-steel-400">Выйти</button>
           </form>
         </header>
-        {/* Мобильная навигация — горизонтальная лента */}
-        <div className="overflow-x-auto border-b border-ink-800 bg-ink-900 px-2 py-2 md:hidden">
-          <div className="w-max"><AdminNav /></div>
-        </div>
+        {/* Мобильная навигация — сворачиваемая, чтобы не задвигать контент вниз */}
+        <details className="border-b border-ink-800 bg-ink-900 md:hidden">
+          <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-steel-200 [&::-webkit-details-marker]:hidden">
+            ☰ Разделы админки
+          </summary>
+          <div className="px-2 pb-2">
+            <AdminNav />
+          </div>
+        </details>
         <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
       </div>
     </div>

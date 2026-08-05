@@ -4,6 +4,8 @@ import CategoryTile from '@/components/CategoryTile';
 import LeadCTA from '@/components/LeadCTA';
 import Thumb from '@/components/Thumb';
 import { taskIcon, IconWorkshop, IconStitch, IconAssembly } from '@/components/icons';
+import Reveal from '@/components/Reveal';
+import CountUp from '@/components/CountUp';
 import JsonLd from '@/components/JsonLd';
 import { categories } from '@/lib/categories';
 import { taskEntries, articles } from '@/lib/content';
@@ -40,7 +42,13 @@ export default function HomePage() {
         .filter((b) => !b.hidden && BLOCKS[b.id])
         .map((b) => {
           const Block = BLOCKS[b.id];
-          return <Block key={b.id} />;
+          // Герой над сгибом — без reveal; остальные блоки плавно появляются
+          if (b.id === 'hero') return <Block key={b.id} />;
+          return (
+            <Reveal key={b.id}>
+              <Block />
+            </Reveal>
+          );
         })}
 
       <JsonLd
@@ -74,6 +82,8 @@ function Hero() {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent" />
+        {/* тонкий световой блик, проходящий по герою */}
+        <div className="absolute inset-y-0 -left-1/4 w-1/3 animate-sheen bg-gradient-to-r from-transparent via-white/[0.06] to-transparent motion-reduce:hidden" />
       </div>
 
       <div className="container-page py-20 md:py-28 lg:py-36">
@@ -116,7 +126,7 @@ function AudienceEntries() {
           <Link
             key={e.slug}
             href={e.href}
-            className="group card flex flex-col p-6 transition-all duration-200 hover:-translate-y-1 hover:border-accent/50"
+            className="group card glow-hover flex flex-col p-6 hover:-translate-y-1 hover:border-accent/50"
           >
             <span className="flex h-8 w-8 items-center justify-center text-accent-400 [&>svg]:h-full [&>svg]:w-full">
               {taskIcon(e.slug)}
@@ -228,20 +238,22 @@ function MadeToOrder() {
   );
 }
 
-/* 7. Цифры и доверие [РЕАЛ] (Том 4, п. 4.8) — только реальные */
+/* 7. Цифры и доверие [РЕАЛ] (Том 4, п. 4.8) — только реальные, с анимацией счётчика */
 function Numbers() {
   const stats = [
-    { v: `с ${company.foundedYear}`, l: 'год основания' },
-    { v: '8', l: 'категорий в производстве' },
-    { v: `${company.cities.length}+`, l: 'городов доставки' },
-    { v: `от ${company.minProductionDays} дн.`, l: 'срок изготовления' },
+    { to: company.foundedYear, prefix: 'с ', suffix: '', l: 'год основания' },
+    { to: 8, prefix: '', suffix: '', l: 'категорий в производстве' },
+    { to: company.cities.length, prefix: '', suffix: '+', l: 'городов доставки' },
+    { to: company.minProductionDays, prefix: 'от ', suffix: ' дн.', l: 'срок изготовления' },
   ];
   return (
     <Section className="border-y border-ink-800 bg-ink-900/40">
       <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
         {stats.map((s) => (
           <div key={s.l} className="text-center">
-            <div className="text-3xl font-black text-white md:text-4xl">{s.v}</div>
+            <div className="text-3xl font-black text-white md:text-4xl">
+              <CountUp to={s.to} prefix={s.prefix} suffix={s.suffix} />
+            </div>
             <div className="mt-1 text-sm text-steel-400">{s.l}</div>
           </div>
         ))}

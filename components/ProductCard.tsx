@@ -15,7 +15,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const tone = stockTone(product.stockStatus);
 
   return (
-    <div className="group card flex flex-col overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-ink-500 hover:shadow-xl hover:shadow-black/40">
+    <div className="group card glow-hover flex flex-col overflow-hidden hover:-translate-y-1 hover:border-accent/40">
       <Link href={href} className="block">
         <Thumb icon={categoryIcon(product.categorySlug)} label={product.sku} />
       </Link>

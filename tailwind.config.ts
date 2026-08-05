@@ -60,12 +60,18 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        sheen: {
+          '0%': { transform: 'translateX(-130%) skewX(-12deg)' },
+          '60%,100%': { transform: 'translateX(160%) skewX(-12deg)' },
+        },
       },
       animation: {
         // баннер категории: медленный зум 8с ease-out (Том 2, п. 2.4.1)
         'slow-zoom': 'slow-zoom 8s ease-out forwards',
         // герой: сдвиг снизу вверх 500мс (Том 4, п. 4.2)
         'rise-in': 'rise-in 500ms ease-out both',
+        // тонкий световой блик по герою
+        sheen: 'sheen 7s ease-in-out infinite',
       },
     },
   },
