@@ -4,10 +4,12 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import CategoryTile from '@/components/CategoryTile';
 import SearchBar from '@/components/SearchBar';
 import JsonLd from '@/components/JsonLd';
-import { categories } from '@/lib/categories';
+import { allCategoriesMerged } from '@/lib/catalog';
 import { taskEntries } from '@/lib/content';
 import { taskIcon } from '@/components/icons';
 import { breadcrumbLd } from '@/lib/seo';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Каталог оборудования для единоборств',
@@ -59,7 +61,7 @@ export default function CatalogPage() {
       <section className="mt-12 pb-4">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-steel-400">Или выберите категорию</h2>
         <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {categories.map((c) => (
+          {allCategoriesMerged().map((c) => (
             <CategoryTile key={c.slug} category={c} />
           ))}
         </div>

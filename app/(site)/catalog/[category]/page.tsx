@@ -7,7 +7,7 @@ import LeadCTA from '@/components/LeadCTA';
 import JsonLd from '@/components/JsonLd';
 import { categoryIcon } from '@/components/icons';
 import { categories } from '@/lib/categories';
-import { getCategoryMerged, productsInCategory } from '@/lib/catalog';
+import { getCategoryMerged, productsInCategory, categoryBanner } from '@/lib/catalog';
 import { breadcrumbLd, itemListLd, faqLd, categoryMeta } from '@/lib/seo';
 
 // ISR: подхватываем правки из админки/импорта без полной пересборки (Том 4, п. 4.5)
@@ -28,6 +28,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
   const cat = getCategoryMerged(params.category);
   if (!cat) notFound();
   const products = productsInCategory(cat.slug);
+  const banner = categoryBanner(cat.slug);
 
   const crumbs = [
     { name: 'Главная', url: '/' },
@@ -40,15 +41,25 @@ export default function CategoryPage({ params }: { params: { category: string } 
       {/* Баннер на 40% высоты экрана, не полноэкранный (Том 2, п. 2.4.1) */}
       <section className="relative overflow-hidden border-b border-ink-800">
         <div className="absolute inset-0 -z-10">
-          <div className="h-full w-full animate-slow-zoom bg-gradient-to-br from-ink-800 via-ink-900 to-ink-950" />
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle at 80% 20%, rgba(225,29,42,0.2), transparent 45%), repeating-linear-gradient(120deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 24px)',
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+          {banner ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={banner} alt="" className="h-full w-full animate-slow-zoom object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-ink-950/30" />
+            </>
+          ) : (
+            <>
+              <div className="h-full w-full animate-slow-zoom bg-gradient-to-br from-ink-800 via-ink-900 to-ink-950" />
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage:
+                    'radial-gradient(circle at 80% 20%, rgba(225,29,42,0.2), transparent 45%), repeating-linear-gradient(120deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 24px)',
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+            </>
+          )}
         </div>
         <div className="container-page py-14 md:py-20">
           <div className="flex h-12 w-12 items-center justify-center text-accent-400 [&>svg]:h-full [&>svg]:w-full">

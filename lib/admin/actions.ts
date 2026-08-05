@@ -30,6 +30,28 @@ export async function saveProductOverlay(formData: FormData) {
   redirect('/admin/products?saved=' + encodeURIComponent(sku));
 }
 
+/** Сохранить контент категории (Том 7): баннер, тексты, порядок, SEO. */
+export async function saveCategoryOverlay(formData: FormData) {
+  requireAuth();
+  const slug = String(formData.get('slug'));
+  writeData((d) => {
+    const cur = d.categoryOverlays[slug] ?? {};
+    d.categoryOverlays[slug] = {
+      ...cur,
+      name: String(formData.get('name') || '') || undefined,
+      tagline: String(formData.get('tagline') || '') || undefined,
+      summary: String(formData.get('summary') || '') || undefined,
+      seoTitle: String(formData.get('seoTitle') || '') || undefined,
+      seoDescription: String(formData.get('seoDescription') || '') || undefined,
+      order: formData.get('order') ? Number(formData.get('order')) : undefined,
+      hidden: formData.get('hidden') === 'on',
+    };
+  });
+  logAction('Контент-менеджер', `Изменена категория ${slug}`);
+  revalidatePath('/', 'layout');
+  redirect('/admin/categories?saved=' + encodeURIComponent(slug));
+}
+
 /** Удалить загруженное фото товара (Том 7, п. 7.3) */
 export async function deleteProductMedia(formData: FormData) {
   requireAuth();

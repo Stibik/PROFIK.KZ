@@ -7,7 +7,7 @@ import { taskIcon, IconWorkshop, IconStitch, IconAssembly } from '@/components/i
 import Reveal from '@/components/Reveal';
 import CountUp from '@/components/CountUp';
 import JsonLd from '@/components/JsonLd';
-import { categories } from '@/lib/categories';
+import { allCategoriesMerged } from '@/lib/catalog';
 import { taskEntries, articles } from '@/lib/content';
 import { company } from '@/lib/company';
 import { faqLd } from '@/lib/seo';
@@ -147,7 +147,7 @@ function CategoriesBlock() {
     <Section className="border-t border-ink-800 bg-ink-900/40">
       <SectionHead title="Что мы производим" sub="Восемь категорий оборудования — от боксёрских мешков до покрытий для зала." />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {categories.map((c) => (
+        {allCategoriesMerged().map((c) => (
           <CategoryTile key={c.slug} category={c} />
         ))}
       </div>

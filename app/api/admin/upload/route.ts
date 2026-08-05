@@ -16,10 +16,14 @@ export async function POST(request: Request) {
 
   const form = await request.formData();
   const sku = String(form.get('sku') ?? '');
-  const back = `/admin/products/${sku}`;
+  const catSlug = String(form.get('catSlug') ?? '');
+  const isCategory = Boolean(catSlug);
+  const back = isCategory ? `/admin/categories/${catSlug}` : `/admin/products/${sku}`;
   const file = form.get('file');
 
-  if (!sku || !productBySku(sku)) return NextResponse.redirect(new URL('/admin/products', request.url), { status: 303 });
+  if (!isCategory && (!sku || !productBySku(sku))) {
+    return NextResponse.redirect(new URL('/admin/products', request.url), { status: 303 });
+  }
   if (!(file instanceof File) || file.size === 0) {
     return NextResponse.redirect(new URL(`${back}?up=nofile`, request.url), { status: 303 });
   }
@@ -30,19 +34,28 @@ export async function POST(request: Request) {
   try {
     fs.mkdirSync(UPLOADS_DIR, { recursive: true });
     const stamp = Date.now().toString(36);
-    const fname = `${safeName(sku)}-${stamp}-${safeName(file.name)}`;
+    const key = isCategory ? `cat-${safeName(catSlug)}` : safeName(sku);
+    const fname = `${key}-${stamp}-${safeName(file.name)}`;
     const buf = Buffer.from(await file.arrayBuffer());
     fs.writeFileSync(path.join(UPLOADS_DIR, fname), buf);
     const url = `/media/${fname}`;
-    writeData((d) => {
-      const cur = d.productOverlays[sku] ?? {};
-      d.productOverlays[sku] = { ...cur, media: [...(cur.media ?? []), url] };
-    });
-    logAction('Контент-менеджер', `Загружено фото товара ${sku}`);
+
+    if (isCategory) {
+      writeData((d) => {
+        d.categoryOverlays[catSlug] = { ...(d.categoryOverlays[catSlug] ?? {}), bannerImage: url };
+      });
+      logAction('Контент-менеджер', `Загружен баннер категории ${catSlug}`);
+      revalidatePath(`/catalog/${catSlug}`);
+    } else {
+      writeData((d) => {
+        const cur = d.productOverlays[sku] ?? {};
+        d.productOverlays[sku] = { ...cur, media: [...(cur.media ?? []), url] };
+      });
+      logAction('Контент-менеджер', `Загружено фото товара ${sku}`);
+      const prod = productBySku(sku)!;
+      revalidatePath(`/catalog/${prod.categorySlug}/${prod.slug}`);
+    }
     revalidatePath(back);
-    // применяем на живой сайт (карточка товара + листинги)
-    const prod = productBySku(sku)!;
-    revalidatePath(`/catalog/${prod.categorySlug}/${prod.slug}`);
     revalidatePath('/', 'layout');
   } catch {
     return NextResponse.redirect(new URL(`${back}?up=err`, request.url), { status: 303 });
