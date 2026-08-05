@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { search, type SearchHit } from '@/lib/search';
+import type { SearchHit } from '@/lib/search';
 
 /**
  * Открытое поле поиска, всегда на виду (Том 2, режим 1). Не иконка-лупа,
- * а открытое поле с мгновенной выдачей по мере ввода.
+ * а открытое поле с мгновенной выдачей по мере ввода. Ищет по актуальному
+ * каталогу (сид + импорт) через серверный эндпоинт /api/search.
  */
 export default function SearchBar({ compact = false }: { compact?: boolean }) {
   const [q, setQ] = useState('');
@@ -18,8 +19,22 @@ export default function SearchBar({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
 
   useEffect(() => {
-    setHits(search(q));
     setActive(0);
+    if (!q.trim()) {
+      setHits([]);
+      return;
+    }
+    const ctl = new AbortController();
+    const t = setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal: ctl.signal })
+        .then((r) => r.json())
+        .then((d) => setHits(d.hits ?? []))
+        .catch(() => {});
+    }, 120);
+    return () => {
+      clearTimeout(t);
+      ctl.abort();
+    };
   }, [q]);
 
   useEffect(() => {

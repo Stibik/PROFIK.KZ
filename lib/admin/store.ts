@@ -44,6 +44,25 @@ export interface CategoryOverlay {
   hidden?: boolean;
 }
 
+/** Товар, созданный импортом Excel (полный каталог из прайса, а не только сид). */
+export interface StoredProduct {
+  sku: string;
+  slug: string;
+  name: string;
+  categorySlug: string;
+  priceRetail: number | null;
+  priceFrom?: boolean;
+  stockStatus: StockStatus;
+  productionDays?: number;
+  salesChannel: SalesChannel;
+  kaspiUrl?: string;
+  made: boolean;
+  keyParams: { label: string; value: string }[];
+  description: string;
+  attributes: Record<string, string | number | boolean>;
+  updatedAt: string;
+}
+
 export interface Review {
   id: string;
   sku: string;
@@ -83,6 +102,7 @@ export interface LogEntry {
 export interface AdminData {
   productOverlays: Record<string, ProductOverlay>;
   categoryOverlays: Record<string, CategoryOverlay>;
+  importedProducts: Record<string, StoredProduct>;
   reviews: Review[];
   leads: Lead[];
   home: { draft: HomeBlock[]; published: HomeBlock[] };
@@ -105,6 +125,7 @@ function seed(): AdminData {
   return {
     productOverlays: {},
     categoryOverlays: {},
+    importedProducts: {},
     reviews: [
       {
         id: 'r1',
@@ -166,6 +187,7 @@ function ensure(): AdminData {
     // миграция старых файлов: добавляем новые поля, если их нет
     if (!data.categoryOverlays) data.categoryOverlays = {};
     if (!data.productOverlays) data.productOverlays = {};
+    if (!data.importedProducts) data.importedProducts = {};
     return data;
   } catch {
     // ФС только для чтения (напр. на serverless) — работаем с сидом в памяти

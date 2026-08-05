@@ -13,7 +13,7 @@ const channelLabel: Record<string, string> = { kaspi: 'Kaspi', request: 'Зая�
 export default function AdminProducts({
   searchParams,
 }: {
-  searchParams: { saved?: string; bulk?: string; imp?: string; u?: string; s?: string };
+  searchParams: { saved?: string; bulk?: string; imp?: string; u?: string; c?: string };
 }) {
   requireAuth();
   const products = allProducts();
@@ -38,7 +38,7 @@ export default function AdminProducts({
       )}
       {searchParams.imp === 'ok' && (
         <div className="mb-4 rounded-md border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm text-green-400">
-          Импорт завершён: обновлено {searchParams.u}, пропущено {searchParams.s}.
+          Импорт завершён: обновлено {searchParams.u}, создано новых {searchParams.c}.
         </div>
       )}
       {(searchParams.imp === 'badfile' || searchParams.imp === 'nofile') && (

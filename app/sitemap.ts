@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { siteUrl } from '@/lib/company';
 import { categories } from '@/lib/categories';
-import { products } from '@/lib/products';
+import { allProducts } from '@/lib/catalog';
 import { articles } from '@/lib/content';
 
 /**
@@ -28,7 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const productPages: MetadataRoute.Sitemap = products
+  const productPages: MetadataRoute.Sitemap = allProducts()
     .filter((p) => p.stockStatus !== 'discontinued')
     .map((p) => ({
       url: `${siteUrl}/catalog/${p.categorySlug}/${p.slug}`,

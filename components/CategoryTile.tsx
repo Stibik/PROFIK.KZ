@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import type { Category } from '@/lib/types';
-import { productsByCategory } from '@/lib/products';
+import { productsInCategory } from '@/lib/catalog';
 import Thumb from './Thumb';
 import { categoryIcon } from './icons';
 
 /** Плитка категории (Том 4, п. 4.4): фото, название, счётчик «N моделей» */
 export default function CategoryTile({ category }: { category: Category }) {
-  const count = productsByCategory(category.slug).length;
+  const count = productsInCategory(category.slug).length;
   return (
     <Link
       href={`/catalog/${category.slug}`}
