@@ -9,30 +9,34 @@ import LeadCTA from '@/components/LeadCTA';
 import JsonLd from '@/components/JsonLd';
 import { categoryIcon } from '@/components/icons';
 import { getCategory } from '@/lib/categories';
-import { products, getProduct, productBySku, productsByCategory } from '@/lib/products';
+import { products } from '@/lib/products';
+import { getProductBySlug, getProductBySku, productsInCategory } from '@/lib/catalog';
 import { articles } from '@/lib/content';
 import { company } from '@/lib/company';
 import { priceLabel, stockLabel, stockTone } from '@/lib/format';
 import { breadcrumbLd, productLd, faqLd, productMeta } from '@/lib/seo';
+
+// ISR: подхватываем правки/импорт без полной пересборки (Том 4, п. 4.5)
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return products.map((p) => ({ category: p.categorySlug, product: p.slug }));
 }
 
 export function generateMetadata({ params }: { params: { category: string; product: string } }): Metadata {
-  const p = getProduct(params.product);
+  const p = getProductBySlug(params.product);
   if (!p) return {};
   const m = productMeta(p);
   return { ...m, alternates: { canonical: `/catalog/${p.categorySlug}/${p.slug}` } };
 }
 
 export default function ProductPage({ params }: { params: { category: string; product: string } }) {
-  const p = getProduct(params.product);
+  const p = getProductBySlug(params.product);
   const cat = getCategory(params.category);
   if (!p || !cat || p.categorySlug !== cat.slug) notFound();
 
-  const related = (p.relatedSkus ?? []).map(productBySku).filter(Boolean) as typeof products;
-  const similar = productsByCategory(cat.slug).filter((x) => x.sku !== p.sku).slice(0, 4);
+  const related = (p.relatedSkus ?? []).map(getProductBySku).filter(Boolean) as typeof products;
+  const similar = productsInCategory(cat.slug).filter((x) => x.sku !== p.sku).slice(0, 4);
   const catArticles = articles.filter((a) => a.categorySlug === cat.slug).slice(0, 3);
   const tone = stockTone(p.stockStatus);
 

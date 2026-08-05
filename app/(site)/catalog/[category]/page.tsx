@@ -6,25 +6,28 @@ import CategoryListing from '@/components/CategoryListing';
 import LeadCTA from '@/components/LeadCTA';
 import JsonLd from '@/components/JsonLd';
 import { categoryIcon } from '@/components/icons';
-import { categories, getCategory } from '@/lib/categories';
-import { productsByCategory } from '@/lib/products';
+import { categories } from '@/lib/categories';
+import { getCategoryMerged, productsInCategory } from '@/lib/catalog';
 import { breadcrumbLd, itemListLd, faqLd, categoryMeta } from '@/lib/seo';
+
+// ISR: подхватываем правки из админки/импорта без полной пересборки (Том 4, п. 4.5)
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return categories.map((c) => ({ category: c.slug }));
 }
 
 export function generateMetadata({ params }: { params: { category: string } }): Metadata {
-  const cat = getCategory(params.category);
+  const cat = getCategoryMerged(params.category);
   if (!cat) return {};
   const m = categoryMeta(cat);
   return { ...m, alternates: { canonical: `/catalog/${cat.slug}` } };
 }
 
 export default function CategoryPage({ params }: { params: { category: string } }) {
-  const cat = getCategory(params.category);
+  const cat = getCategoryMerged(params.category);
   if (!cat) notFound();
-  const products = productsByCategory(cat.slug);
+  const products = productsInCategory(cat.slug);
 
   const crumbs = [
     { name: 'Главная', url: '/' },

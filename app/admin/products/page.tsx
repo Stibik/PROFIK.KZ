@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireAuth } from '@/lib/admin/auth';
-import { products } from '@/lib/products';
+import { allProducts } from '@/lib/catalog';
 import { getCategory } from '@/lib/categories';
 import { readData } from '@/lib/admin/store';
 import { priceLabel, stockBadge } from '@/lib/format';
@@ -9,16 +9,21 @@ import { PageHead, Panel, Badge } from '@/components/admin/ui';
 
 const channelLabel: Record<string, string> = { kaspi: 'Kaspi', request: 'Заявка', both: 'Оба' };
 
-/** Раздел «Товары»: цены/остатки — только чтение (Том 7, п. 7.3). */
-export default function AdminProducts({ searchParams }: { searchParams: { saved?: string; bulk?: string } }) {
+/** Раздел «Товары»: цены/остатки — фидом (Excel/PFS APP), правки — витринные (Том 7, п. 7.3). */
+export default function AdminProducts({
+  searchParams,
+}: {
+  searchParams: { saved?: string; bulk?: string; imp?: string; u?: string; s?: string };
+}) {
   requireAuth();
+  const products = allProducts();
   const overlays = readData().productOverlays;
 
   return (
     <>
       <PageHead
         title="Товары"
-        sub="Номенклатура, цены и остатки управляются в PFS APP и здесь только для чтения. Редактируются: фото, описание, SEO, канал продажи, связи."
+        sub="Каталог — локальная копия из PFS APP (или из Excel-импорта). Цены/остатки грузятся фидом, вручную правятся витринные поля: фото, описание, SEO, канал."
       />
 
       {searchParams.saved && (
@@ -31,6 +36,36 @@ export default function AdminProducts({ searchParams }: { searchParams: { saved?
           Канал изменён для {searchParams.bulk} товаров
         </div>
       )}
+      {searchParams.imp === 'ok' && (
+        <div className="mb-4 rounded-md border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm text-green-400">
+          Импорт завершён: обновлено {searchParams.u}, пропущено {searchParams.s}.
+        </div>
+      )}
+      {(searchParams.imp === 'badfile' || searchParams.imp === 'nofile') && (
+        <div className="mb-4 rounded-md border border-accent/40 bg-accent/10 px-4 py-2 text-sm text-accent-400">
+          Не удалось прочитать файл. Загрузите .xlsx, выгруженный этой же кнопкой.
+        </div>
+      )}
+
+      {/* Excel: экспорт и импорт прайса (Том 7, п. 7.3; Том 1) */}
+      <Panel className="mb-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <a href="/api/admin/export" className="btn-secondary py-1.5 text-sm">↓ Выгрузить в Excel</a>
+          <form action="/api/admin/import" method="post" encType="multipart/form-data" className="flex flex-wrap items-center gap-2">
+            <input
+              type="file"
+              name="file"
+              accept=".xlsx,.xls"
+              required
+              className="max-w-[220px] text-xs text-steel-300 file:mr-2 file:rounded file:border-0 file:bg-ink-700 file:px-3 file:py-1.5 file:text-steel-100"
+            />
+            <button className="btn-secondary py-1.5 text-sm">↑ Загрузить из Excel</button>
+          </form>
+          <span className="text-xs text-steel-500">
+            Обновляет цены, остатки, сроки и названия по артикулу. Формат — как в выгрузке.
+          </span>
+        </div>
+      </Panel>
 
       {/* Массовые операции (Том 7, п. 7.3) */}
       <form action={bulkSetChannel}>

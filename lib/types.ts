@@ -85,6 +85,8 @@ export interface Product {
   forWhom?: string;
   /** с этим покупают — slug'и товаров (Том 3, п. 3.8) */
   relatedSkus?: string[];
+  /** загруженные маркетинговые фото (Том 0: фото — зона сайта) */
+  media?: string[];
   faq?: ProductFaq[];
   updatedAt: string;
 }

@@ -1,7 +1,7 @@
 import 'server-only';
 import fs from 'node:fs';
 import path from 'node:path';
-import type { SalesChannel } from '../types';
+import type { SalesChannel, StockStatus } from '../types';
 import { products } from '../products';
 
 /**
@@ -17,12 +17,31 @@ const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), '.data');
 const DATA_FILE = path.join(DATA_DIR, 'admin.json');
 
 export interface ProductOverlay {
+  // витринные поля (редактируются вручную на сайте)
   salesChannel?: SalesChannel;
   kaspiUrl?: string;
   description?: string;
   seoTitle?: string;
   seoDescription?: string;
   relatedSkus?: string[];
+  media?: string[]; // загруженные маркетинговые фото (Том 0: фото — на сайте)
+  // поля каталога, приходящие «фидом» из Excel-импорта (эмуляция PFS APP)
+  name?: string;
+  priceRetail?: number | null;
+  priceFrom?: boolean;
+  stockStatus?: StockStatus;
+  productionDays?: number;
+}
+
+export interface CategoryOverlay {
+  name?: string;
+  tagline?: string;
+  summary?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  bannerImage?: string;
+  order?: number;
+  hidden?: boolean;
 }
 
 export interface Review {
@@ -63,6 +82,7 @@ export interface LogEntry {
 
 export interface AdminData {
   productOverlays: Record<string, ProductOverlay>;
+  categoryOverlays: Record<string, CategoryOverlay>;
   reviews: Review[];
   leads: Lead[];
   home: { draft: HomeBlock[]; published: HomeBlock[] };
@@ -84,6 +104,7 @@ const DEFAULT_HOME_BLOCKS: HomeBlock[] = [
 function seed(): AdminData {
   return {
     productOverlays: {},
+    categoryOverlays: {},
     reviews: [
       {
         id: 'r1',
@@ -141,7 +162,11 @@ function ensure(): AdminData {
       fs.writeFileSync(DATA_FILE, JSON.stringify(s, null, 2));
       return s;
     }
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8')) as AdminData;
+    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8')) as AdminData;
+    // миграция старых файлов: добавляем новые поля, если их нет
+    if (!data.categoryOverlays) data.categoryOverlays = {};
+    if (!data.productOverlays) data.productOverlays = {};
+    return data;
   } catch {
     // ФС только для чтения (напр. на serverless) — работаем с сидом в памяти
     return seed();
