@@ -23,3 +23,17 @@ export const company: CompanyFacts = {
 };
 
 export const siteUrl = `https://${company.domain}`;
+
+/**
+ * Индексация поисковиками (Том 0, миграция, Этап 1). На техническом домене
+ * Render сайт ДОЛЖЕН быть закрыт от индексации, иначе тестовый адрес создаёт
+ * дубли и портит основной сайт. Открываем только при переключении DNS —
+ * выставив SITE_INDEXABLE=true в переменных окружения продакшена.
+ */
+export const indexable = process.env.SITE_INDEXABLE === 'true';
+
+/** Коды подтверждения для вебмастеров (вставляются при подключении). */
+export const verification = {
+  google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+  yandex: process.env.YANDEX_VERIFICATION || undefined,
+};

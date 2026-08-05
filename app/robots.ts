@@ -1,10 +1,11 @@
 import type { MetadataRoute } from 'next';
-import { siteUrl } from '@/lib/company';
+import { siteUrl, indexable } from '@/lib/company';
 
 /**
  * robots.txt (Том 5, п. 5.1 + Том 6, п. 6.1).
- * Служебное закрыто; ИИ-краулеры явно допущены — блокировать их значит
- * «закрыть магазин на амбарный замок и жаловаться на отсутствие покупателей».
+ * На техническом домене (SITE_INDEXABLE != true) закрываем сайт целиком —
+ * Этап 1 миграции (Том 0). На продакшене: служебное закрыто, ИИ-краулеры
+ * явно допущены — блокировать их значит «закрыть магазин на амбарный замок».
  */
 const aiBots = [
   'GPTBot',
@@ -19,6 +20,11 @@ const aiBots = [
 ];
 
 export default function robots(): MetadataRoute.Robots {
+  if (!indexable) {
+    // Технический домен — закрыто целиком (Том 0, миграция, Этап 1)
+    return { rules: [{ userAgent: '*', disallow: '/' }] };
+  }
+
   const disallow = ['/admin', '/api'];
   return {
     rules: [

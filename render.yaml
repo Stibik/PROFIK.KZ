@@ -13,3 +13,17 @@ services:
       - key: NODE_VERSION
         value: "22"
       # next start сам слушает порт из переменной PORT, которую задаёт Render
+      # Индексация закрыта на техническом домене (Том 0, миграция, Этап 1).
+      # Переключить на "true" только при переезде DNS на боевой profik.kz.
+      - key: SITE_INDEXABLE
+        value: "false"
+      # Доступ в админку — задайте свои значения в панели Render (Secret).
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      # Коды подтверждения вебмастеров — вставите при подключении консолей.
+      - key: GOOGLE_SITE_VERIFICATION
+        sync: false
+      - key: YANDEX_VERIFICATION
+        sync: false

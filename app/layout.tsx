@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { company, siteUrl } from '@/lib/company';
+import { company, siteUrl, indexable, verification } from '@/lib/company';
 
 /**
  * Корневой layout — только html/body. Оболочка сайта (шапка/подвал) живёт в
@@ -13,7 +13,12 @@ export const metadata: Metadata = {
     template: '%s | PFS',
   },
   description: `Профессиональное оборудование для единоборств от производителя ${company.brand}. Боксёрские мешки, манекены, покрытия, лапы. Изготовление под заказ от ${company.minProductionDays} дней. Доставка по Казахстану.`,
-  robots: { index: true, follow: true },
+  // Закрыто от индексации на техническом домене (Том 0, миграция, Этап 1)
+  robots: indexable ? { index: true, follow: true } : { index: false, follow: false },
+  verification: {
+    google: verification.google,
+    yandex: verification.yandex,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
