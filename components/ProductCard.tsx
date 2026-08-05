@@ -17,7 +17,12 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="group card glow-hover flex flex-col overflow-hidden hover:-translate-y-1 hover:border-accent/40">
       <Link href={href} className="block">
-        <Thumb icon={categoryIcon(product.categorySlug)} label={product.sku} />
+        {product.media && product.media.length > 0 ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.media[0]} alt={product.name} className="aspect-square w-full object-cover" />
+        ) : (
+          <Thumb icon={categoryIcon(product.categorySlug)} label={product.sku} />
+        )}
       </Link>
 
       <div className="flex flex-1 flex-col p-4">

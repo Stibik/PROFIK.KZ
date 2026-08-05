@@ -30,6 +30,20 @@ export async function saveProductOverlay(formData: FormData) {
   redirect('/admin/products?saved=' + encodeURIComponent(sku));
 }
 
+/** Удалить загруженное фото товара (Том 7, п. 7.3) */
+export async function deleteProductMedia(formData: FormData) {
+  requireAuth();
+  const sku = String(formData.get('sku'));
+  const url = String(formData.get('url'));
+  writeData((d) => {
+    const cur = d.productOverlays[sku];
+    if (cur?.media) cur.media = cur.media.filter((m) => m !== url);
+  });
+  logAction('Контент-менеджер', `Удалено фото товара ${sku}`);
+  revalidatePath(`/admin/products/${sku}`);
+  revalidatePath('/', 'layout');
+}
+
 /** Массовая смена канала продажи (Том 7, п. 7.3) */
 export async function bulkSetChannel(formData: FormData) {
   requireAuth();

@@ -1,20 +1,21 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireAuth } from '@/lib/admin/auth';
-import { productBySku } from '@/lib/products';
+import { getProductBySku } from '@/lib/catalog';
 import { getCategory } from '@/lib/categories';
 import { readData } from '@/lib/admin/store';
 import { priceLabel, stockLabel } from '@/lib/format';
-import { saveProductOverlay } from '@/lib/admin/actions';
+import { saveProductOverlay, deleteProductMedia } from '@/lib/admin/actions';
 import { PageHead, Panel, ReadOnlyField } from '@/components/admin/ui';
 
 /** Карточка товара в админке: read-only из PFS APP + витринные поля (Том 7, п. 7.3). */
-export default function EditProduct({ params }: { params: { sku: string } }) {
+export default function EditProduct({ params }: { params: { sku: string; }; }) {
   requireAuth();
-  const p = productBySku(params.sku);
+  const p = getProductBySku(params.sku);
   if (!p) notFound();
   const cat = getCategory(p.categorySlug);
   const ov = readData().productOverlays[p.sku] ?? {};
+  const media = ov.media ?? [];
 
   return (
     <>
@@ -84,6 +85,43 @@ export default function EditProduct({ params }: { params: { sku: string } }) {
           </form>
         </Panel>
       </div>
+
+      {/* Фотографии (маркетинговые) — зона сайта (Том 0, п. 0.1) */}
+      <Panel title="Фотографии" className="mt-4">
+        <form action="/api/admin/upload" method="post" encType="multipart/form-data" className="flex flex-wrap items-center gap-2">
+          <input type="hidden" name="sku" value={p.sku} />
+          <input
+            type="file"
+            name="file"
+            accept="image/*"
+            required
+            className="max-w-[260px] text-xs text-steel-300 file:mr-2 file:rounded file:border-0 file:bg-ink-700 file:px-3 file:py-1.5 file:text-steel-100"
+          />
+          <button className="btn-secondary py-1.5 text-sm">Загрузить фото</button>
+          <span className="text-xs text-steel-500">JPG/PNG/WebP. Первое фото — главное в карточке и листинге.</span>
+        </form>
+
+        {media.length > 0 ? (
+          <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+            {media.map((url, i) => (
+              <div key={url} className="group relative overflow-hidden rounded-md border border-ink-700">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="aspect-square w-full object-cover" />
+                {i === 0 && <span className="absolute left-1 top-1 rounded bg-accent px-1.5 py-0.5 text-[10px] text-white">главное</span>}
+                <form action={deleteProductMedia} className="absolute right-1 top-1">
+                  <input type="hidden" name="sku" value={p.sku} />
+                  <input type="hidden" name="url" value={url} />
+                  <button className="rounded bg-black/70 px-1.5 py-0.5 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                    удалить
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-steel-500">Фото пока не загружены — показываются фирменные заглушки.</p>
+        )}
+      </Panel>
     </>
   );
 }

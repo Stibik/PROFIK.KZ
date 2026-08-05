@@ -53,7 +53,7 @@ export default function ProductPage({ params }: { params: { category: string; pr
 
       {/* Верхний блок: галерея + цена/статус/кнопка (Том 3, п. 3.2) */}
       <div className="grid gap-8 md:grid-cols-2">
-        <Gallery slug={cat.slug} name={p.name} />
+        <Gallery slug={cat.slug} name={p.name} media={p.media} />
 
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">{p.name}</h1>
