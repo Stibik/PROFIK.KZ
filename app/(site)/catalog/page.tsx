@@ -6,6 +6,7 @@ import SearchBar from '@/components/SearchBar';
 import JsonLd from '@/components/JsonLd';
 import { categories } from '@/lib/categories';
 import { taskEntries } from '@/lib/content';
+import { taskIcon } from '@/components/icons';
 import { breadcrumbLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -46,7 +47,7 @@ export default function CatalogPage() {
               href={e.href}
               className="group card flex flex-col items-start gap-2 p-4 transition-all hover:-translate-y-0.5 hover:border-accent/50"
             >
-              <span className="text-2xl">{e.emoji}</span>
+              <span className="flex h-7 w-7 items-center justify-center text-accent-400 [&>svg]:h-full [&>svg]:w-full">{taskIcon(e.slug)}</span>
               <span className="font-semibold text-white group-hover:text-accent-400">{e.title}</span>
               <span className="text-xs text-steel-400">{e.audience}</span>
             </Link>

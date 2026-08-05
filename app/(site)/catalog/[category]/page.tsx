@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import CategoryListing from '@/components/CategoryListing';
 import LeadCTA from '@/components/LeadCTA';
 import JsonLd from '@/components/JsonLd';
+import { categoryIcon } from '@/components/icons';
 import { categories, getCategory } from '@/lib/categories';
 import { productsByCategory } from '@/lib/products';
 import { breadcrumbLd, itemListLd, faqLd, categoryMeta } from '@/lib/seo';
@@ -47,7 +48,9 @@ export default function CategoryPage({ params }: { params: { category: string } 
           <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
         </div>
         <div className="container-page py-14 md:py-20">
-          <div className="text-5xl">{cat.emoji}</div>
+          <div className="flex h-12 w-12 items-center justify-center text-accent-400 [&>svg]:h-full [&>svg]:w-full">
+            {categoryIcon(cat.slug)}
+          </div>
           <h1 className="mt-3 text-3xl font-bold md:text-4xl">{cat.name}</h1>
           {/* Одна строка: производим, а не перепродаём (Том 2, п. 2.4.1) */}
           <p className="mt-2 max-w-xl text-steel-300">{cat.tagline}</p>

@@ -3,6 +3,7 @@ import { Section, SectionHead } from '@/components/Section';
 import CategoryTile from '@/components/CategoryTile';
 import LeadCTA from '@/components/LeadCTA';
 import Thumb from '@/components/Thumb';
+import { taskIcon, IconWorkshop, IconStitch, IconAssembly } from '@/components/icons';
 import JsonLd from '@/components/JsonLd';
 import { categories } from '@/lib/categories';
 import { taskEntries, articles } from '@/lib/content';
@@ -117,7 +118,9 @@ function AudienceEntries() {
             href={e.href}
             className="group card flex flex-col p-6 transition-all duration-200 hover:-translate-y-1 hover:border-accent/50"
           >
-            <span className="text-3xl">{e.emoji}</span>
+            <span className="flex h-8 w-8 items-center justify-center text-accent-400 [&>svg]:h-full [&>svg]:w-full">
+              {taskIcon(e.slug)}
+            </span>
             <h3 className="mt-4 text-lg font-semibold text-white group-hover:text-accent-400">{e.title}</h3>
             <p className="mt-2 flex-1 text-sm text-steel-400">{e.description}</p>
             <span className="mt-4 text-sm font-medium text-accent-400">Подробнее →</span>
@@ -169,10 +172,10 @@ function WeManufacture() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           {/* [РЕАЛ] место под фото цеха — общий план и детали процесса */}
-          <Thumb emoji="🏭" ratio="tall" className="rounded-lg" label="Цех — фото" />
+          <Thumb icon={<IconWorkshop />} ratio="tall" className="rounded-lg" label="Цех — фото" />
           <div className="grid gap-3">
-            <Thumb emoji="🧵" ratio="wide" className="rounded-lg" label="Прошивка" />
-            <Thumb emoji="🔧" ratio="wide" className="rounded-lg" label="Сборка" />
+            <Thumb icon={<IconStitch />} ratio="wide" className="rounded-lg" label="Прошивка" />
+            <Thumb icon={<IconAssembly />} ratio="wide" className="rounded-lg" label="Сборка" />
           </div>
         </div>
       </div>

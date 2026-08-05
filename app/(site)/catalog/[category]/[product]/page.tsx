@@ -7,6 +7,7 @@ import Gallery from '@/components/Gallery';
 import ProductCard from '@/components/ProductCard';
 import LeadCTA from '@/components/LeadCTA';
 import JsonLd from '@/components/JsonLd';
+import { categoryIcon } from '@/components/icons';
 import { getCategory } from '@/lib/categories';
 import { products, getProduct, productBySku, productsByCategory } from '@/lib/products';
 import { articles } from '@/lib/content';
@@ -48,7 +49,7 @@ export default function ProductPage({ params }: { params: { category: string; pr
 
       {/* Верхний блок: галерея + цена/статус/кнопка (Том 3, п. 3.2) */}
       <div className="grid gap-8 md:grid-cols-2">
-        <Gallery emoji={cat.emoji} name={p.name} />
+        <Gallery slug={cat.slug} name={p.name} />
 
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">{p.name}</h1>
@@ -207,7 +208,7 @@ export default function ProductPage({ params }: { params: { category: string; pr
                   href={`/catalog/${r.categorySlug}/${r.slug}`}
                   className="flex items-center gap-3 rounded-lg border border-ink-700 bg-ink-900 p-3 transition-colors hover:border-ink-500"
                 >
-                  <span className="text-2xl">{getCategory(r.categorySlug)?.emoji}</span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center text-steel-400 [&>svg]:h-6 [&>svg]:w-6">{categoryIcon(r.categorySlug)}</span>
                   <span className="min-w-0">
                     <span className="block truncate text-sm text-white">{r.name}</span>
                     <span className="block text-xs text-steel-400">{priceLabel(r)}</span>

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
-import { getCategory } from '@/lib/categories';
 import { priceLabel, stockBadge, stockTone } from '@/lib/format';
 import Thumb from './Thumb';
+import { categoryIcon } from './icons';
 
 /**
  * Карточка товара в листинге (Том 2, п. 2.5). Каждый элемент отрабатывает
@@ -11,14 +11,13 @@ import Thumb from './Thumb';
  * Никаких фальшивых рейтингов и таймеров (Том 2, п. 2.5).
  */
 export default function ProductCard({ product }: { product: Product }) {
-  const cat = getCategory(product.categorySlug);
   const href = `/catalog/${product.categorySlug}/${product.slug}`;
   const tone = stockTone(product.stockStatus);
 
   return (
     <div className="group card flex flex-col overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-ink-500 hover:shadow-xl hover:shadow-black/40">
       <Link href={href} className="block">
-        <Thumb emoji={cat?.emoji ?? '📦'} label={product.sku} />
+        <Thumb icon={categoryIcon(product.categorySlug)} label={product.sku} />
       </Link>
 
       <div className="flex flex-1 flex-col p-4">

@@ -6,6 +6,7 @@ import { products } from '@/lib/products';
 import { priceLabel } from '@/lib/format';
 import LeadCTA from './LeadCTA';
 import Thumb from './Thumb';
+import { categoryIcon } from './icons';
 
 /**
  * Мастер подбора мешка (Том 9.1). Переводит бытовое описание («тренируюсь дома,
@@ -134,7 +135,9 @@ export default function BagWizard() {
 function Intro({ onStart }: { onStart: () => void }) {
   return (
     <div className="text-center">
-      <div className="text-5xl">🥊</div>
+      <div className="mx-auto flex h-14 w-14 items-center justify-center text-accent-400 [&>svg]:h-full [&>svg]:w-full">
+        {categoryIcon('boksyorskie-meshki')}
+      </div>
       <h1 className="mt-4 text-2xl font-bold md:text-3xl">Подбор боксёрского мешка за 30 секунд</h1>
       <p className="mx-auto mt-3 max-w-md text-steel-400">
         Ответьте на 3–4 вопроса про себя и место — подберём вес, крепление и подходящие модели.
@@ -300,7 +303,7 @@ function Result({ answers, onReset }: { answers: Answers; onReset: () => void })
           {scored.map(({ p }) => (
             <div key={p.sku} className="flex gap-4 rounded-lg border border-ink-700 bg-ink-900 p-3">
               <div className="h-24 w-24 shrink-0 overflow-hidden rounded-md">
-                <Thumb emoji="🥊" ratio="square" />
+                <Thumb icon={categoryIcon(p.categorySlug)} ratio="square" />
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="font-semibold text-white">{p.name}</h3>
