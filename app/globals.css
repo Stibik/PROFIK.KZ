@@ -17,7 +17,8 @@
   }
 
   h1, h2, h3, h4 {
-    @apply font-semibold tracking-tight text-white;
+    @apply font-display font-semibold text-white;
+    letter-spacing: 0.005em;
     text-wrap: balance;
   }
 
@@ -44,15 +45,17 @@
   /* Собственный CTA — красный (Том 3, п. 3.4) */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-md bg-accent px-6 py-3
-           text-sm font-semibold text-white transition-colors duration-200
-           hover:bg-accent-600 focus-visible:outline focus-visible:outline-2
+           font-display text-sm font-semibold uppercase tracking-wider text-white
+           transition-all duration-200 hover:bg-accent-600
+           hover:shadow-[0_10px_30px_-10px_rgba(225,29,42,0.6)]
+           focus-visible:outline focus-visible:outline-2
            focus-visible:outline-offset-2 focus-visible:outline-accent-400;
   }
 
   /* Вторичное действие — например «Купить на Kaspi» (не красный) */
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-md border border-ink-500
-           bg-ink-800 px-6 py-3 text-sm font-semibold text-steel-100
+           bg-ink-800 px-6 py-3 font-display text-sm font-semibold uppercase tracking-wider text-steel-100
            transition-colors duration-200 hover:border-steel-400 hover:bg-ink-700
            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
            focus-visible:outline-steel-400;
@@ -86,6 +89,36 @@
     box-shadow:
       0 0 0 1px rgba(225, 29, 42, 0.35),
       0 18px 40px -16px rgba(225, 29, 42, 0.35);
+  }
+
+  /* Надзаголовок: красная тонкая метка капсом (фирменная деталь) */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-display text-xs font-semibold uppercase tracking-[0.2em] text-accent-400;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-6 bg-accent;
+  }
+
+  /* Индустриальная нумерация секций — крупная, контурная (0.1) */
+  .index-num {
+    @apply pointer-events-none select-none font-display font-bold leading-none text-transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.14);
+  }
+
+  /* Моноширинный акцент для артикулов и характеристик */
+  .mono {
+    font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, monospace;
+    @apply tracking-tight;
+  }
+
+  /* Тонкая линейка-разделитель с красной засечкой */
+  .rule {
+    @apply relative h-px w-full bg-ink-700;
+  }
+  .rule::before {
+    content: '';
+    @apply absolute left-0 top-0 h-px w-10 bg-accent;
   }
 
   .link-underline {

@@ -89,12 +89,14 @@ function Hero() {
       <div className="container-page py-20 md:py-28 lg:py-36">
         <div className="max-w-3xl">
           <span className="badge-made animate-rise-in">Собственное производство · {company.city}</span>
-          <h1 className="mt-5 animate-rise-in text-3xl font-black leading-[1.1] text-white sm:text-4xl md:text-5xl lg:text-6xl">
-            Оборудование для единоборств.
+          <h1 className="mt-5 animate-rise-in font-display text-4xl font-bold uppercase leading-[0.98] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            Оборудование
             <br />
-            <span className="text-accent-400">Делаем сами</span> — в {company.city}.
+            для единоборств.
+            <br />
+            <span className="text-accent">Делаем сами</span> — в {company.city}.
           </h1>
-          <p className="mt-5 max-w-xl animate-rise-in text-lg text-steel-300">
+          <p className="mt-6 max-w-xl animate-rise-in text-lg text-steel-300">
             Изготовление под заказ от {company.minProductionDays} дней. Любые размеры. Доставка по Казахстану.
           </p>
           <div className="mt-8 flex animate-rise-in flex-wrap gap-3">
@@ -107,6 +109,18 @@ function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Индустриальная лента доверия — фирменная деталь */}
+      <div className="relative border-t border-ink-800 bg-ink-950/60 backdrop-blur">
+        <div className="container-page flex flex-wrap items-center gap-x-8 gap-y-2 py-4 font-display text-xs font-semibold uppercase tracking-[0.15em] text-steel-400">
+          {['Своё производство', `Срок от ${company.minProductionDays} дней`, 'Любые размеры', 'Гарантия и ремонт', 'Доставка по РК'].map((t) => (
+            <span key={t} className="flex items-center gap-2">
+              <span className="h-1 w-1 rounded-full bg-accent" />
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -117,6 +131,7 @@ function AudienceEntries() {
   return (
     <Section>
       <SectionHead
+        index="01"
         eyebrow="С чем пришли?"
         title="Выберите свою задачу"
         sub="Мы отвечаем не «каким товаром», а «какой задачей» — и этим отличаемся от маркетплейса."
@@ -145,7 +160,7 @@ function AudienceEntries() {
 function CategoriesBlock() {
   return (
     <Section className="border-t border-ink-800 bg-ink-900/40">
-      <SectionHead title="Что мы производим" sub="Восемь категорий оборудования — от боксёрских мешков до покрытий для зала." />
+      <SectionHead index="02" eyebrow="Каталог" title="Что мы производим" sub="Восемь категорий оборудования — от боксёрских мешков до покрытий для зала." />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {allCategoriesMerged().map((c) => (
           <CategoryTile key={c.slug} category={c} />
@@ -161,7 +176,7 @@ function WeManufacture() {
     <Section id="production">
       <div className="grid items-center gap-10 md:grid-cols-2">
         <div>
-          <SectionHead eyebrow="Почему мы" title="Мы производим, а не перепродаём" />
+          <SectionHead index="03" eyebrow="Почему мы" title="Мы производим, а не перепродаём" />
           <p className="text-steel-300">
             {company.brand} изготавливает боксёрское оборудование в {company.city} с {company.foundedYear} года.
             Своё производство — значит: сделаем под заказ, ответим за качество, отремонтируем и перетянем,
@@ -197,7 +212,7 @@ function WeManufacture() {
 function Cases() {
   return (
     <Section className="border-y border-ink-800 bg-ink-900/40">
-      <SectionHead eyebrow="Кейсы" title="Оборудованные залы" sub="Реальные проекты с фотографиями — блок наполняется по мере съёмки залов." />
+      <SectionHead index="04" eyebrow="Кейсы" title="Оборудованные залы" sub="Реальные проекты с фотографиями — блок наполняется по мере съёмки залов." />
       <div className="card flex flex-col items-center justify-center gap-3 border-dashed p-10 text-center">
         <span className="text-3xl">🏟️</span>
         <p className="max-w-md text-sm text-steel-400">
@@ -219,15 +234,16 @@ function MadeToOrder() {
   ];
   return (
     <Section>
-      <SectionHead title="Изготовление под заказ" sub="Нужен нестандартный размер или вес? Это то, чего нет у перекупщика на маркетплейсе." />
+      <SectionHead index="05" eyebrow="Производство" title="Изготовление под заказ" sub="Нужен нестандартный размер или вес? Это то, чего нет у перекупщика на маркетплейсе." />
       <div className="grid gap-4 sm:grid-cols-3">
         {steps.map((s) => (
-          <div key={s.n} className="card p-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-lg font-bold text-accent-400">
-              {s.n}
+          <div key={s.n} className="group card glow-hover relative overflow-hidden p-6">
+            <span className="index-num absolute -right-2 -top-3 text-7xl">{String(s.n).padStart(2, '0')}</span>
+            <div className="relative">
+              <div className="h-0.5 w-8 bg-accent" />
+              <h3 className="mt-4 font-display text-lg font-semibold uppercase tracking-wide text-white">{s.t}</h3>
+              <p className="mt-1 text-sm text-steel-400">{s.d}</p>
             </div>
-            <h3 className="mt-4 font-semibold text-white">{s.t}</h3>
-            <p className="mt-1 text-sm text-steel-400">{s.d}</p>
           </div>
         ))}
       </div>
@@ -266,7 +282,7 @@ function Numbers() {
 function KnowledgeBlock() {
   return (
     <Section>
-      <SectionHead eyebrow="База знаний" title="Помогаем выбрать" sub="Разбираем частые вопросы — читают люди и цитируют ИИ-ассистенты." />
+      <SectionHead index="06" eyebrow="База знаний" title="Помогаем выбрать" sub="Разбираем частые вопросы — читают люди и цитируют ИИ-ассистенты." />
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {articles.slice(0, 3).map((a) => (
           <Link key={a.slug} href={`/knowledge/${a.slug}`} className="group card p-5 transition-colors hover:border-ink-500">
