@@ -5,8 +5,12 @@ import { categories } from '@/lib/categories';
 /** Подвал: контакты, реквизиты, соцсети, навигация (Том 4, п. 4.1) */
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-ink-700 bg-ink-900">
-      <div className="container-page grid gap-10 py-12 sm:grid-cols-2 md:grid-cols-4">
+    <footer className="relative mt-20 overflow-hidden border-t-2 border-accent bg-ink-900">
+      {/* крупная фирменная монограмма для «дорогого» вида */}
+      <span className="index-num pointer-events-none absolute -bottom-8 right-2 select-none text-[9rem] leading-none md:text-[14rem]">
+        PFS
+      </span>
+      <div className="container-page relative grid gap-10 py-12 sm:grid-cols-2 md:grid-cols-4">
         <div>
           <div className="flex items-baseline gap-1.5">
             <span className="text-lg font-black text-white">PFS</span>
@@ -51,7 +55,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-ink-800">
+      <div className="relative border-t border-ink-800 bg-ink-900">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-steel-500 sm:flex-row sm:items-center">
           <span>© {company.foundedYear}–2026 {company.legalName}. Все права защищены.</span>
           <span className="flex items-center gap-3">

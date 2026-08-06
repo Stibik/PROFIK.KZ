@@ -13,7 +13,7 @@ const channelLabel: Record<string, string> = { kaspi: 'Kaspi', request: 'Зая�
 export default function AdminProducts({
   searchParams,
 }: {
-  searchParams: { saved?: string; bulk?: string; imp?: string; u?: string; c?: string };
+  searchParams: { saved?: string; bulk?: string; imp?: string; u?: string; c?: string; bulkphoto?: string; m?: string };
 }) {
   requireAuth();
   const products = allProducts();
@@ -46,6 +46,16 @@ export default function AdminProducts({
           Не удалось прочитать файл. Загрузите .xlsx, выгруженный этой же кнопкой.
         </div>
       )}
+      {searchParams.bulkphoto === 'ok' && (
+        <div className="mb-4 rounded-md border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm text-green-400">
+          Фото загружены: привязано {searchParams.m}, без совпадения по артикулу {searchParams.u}.
+        </div>
+      )}
+      {(searchParams.bulkphoto === 'nofile' || searchParams.bulkphoto === 'err') && (
+        <div className="mb-4 rounded-md border border-accent/40 bg-accent/10 px-4 py-2 text-sm text-accent-400">
+          Не удалось загрузить фото. Проверьте файлы и имена (по артикулу).
+        </div>
+      )}
 
       {/* Excel: экспорт и импорт прайса (Том 7, п. 7.3; Том 1) */}
       <Panel className="mb-4">
@@ -65,6 +75,25 @@ export default function AdminProducts({
             Обновляет цены, остатки, сроки и названия по артикулу. Формат — как в выгрузке.
           </span>
         </div>
+      </Panel>
+
+      {/* Массовая загрузка фото по артикулам «дозами» (Том 7, п. 7.3) */}
+      <Panel className="mb-4" title="Массовая загрузка фото по артикулам">
+        <form action="/api/admin/upload-bulk" method="post" encType="multipart/form-data" className="flex flex-wrap items-center gap-3">
+          <input
+            type="file"
+            name="files"
+            accept="image/*"
+            multiple
+            required
+            className="max-w-[320px] text-xs text-steel-300 file:mr-2 file:rounded file:border-0 file:bg-ink-700 file:px-3 file:py-1.5 file:text-steel-100"
+          />
+          <button className="btn-secondary py-1.5 text-sm">↑ Загрузить фото пачкой</button>
+        </form>
+        <p className="mt-2 text-[11px] text-steel-500">
+          Выберите сразу много файлов. Система разложит их по товарам из имени файла: <span className="mono">MSH-120-40.jpg</span>,
+          для нескольких фото — <span className="mono">MSH-120-40-2.jpg</span>. Заливать можно дозами.
+        </p>
       </Panel>
 
       {/* Массовые операции (Том 7, п. 7.3) */}

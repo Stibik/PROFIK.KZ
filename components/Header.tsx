@@ -14,7 +14,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-700 bg-ink-950/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-t-2 border-accent border-b border-ink-700 bg-ink-950/90 backdrop-blur">
       <div className="container-page">
         <div className="flex items-center gap-3 py-3 md:gap-6">
           <Link href="/" className="flex shrink-0 items-baseline gap-1.5" aria-label="Profik.kz — главная">
