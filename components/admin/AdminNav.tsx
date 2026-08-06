@@ -14,6 +14,7 @@ const sections = [
   { href: '/admin/cases', label: 'Кейсы залов', icon: '🏆' },
   { href: '/admin/seo', label: 'SEO', icon: '🔍' },
   { href: '/admin/geo', label: 'Гео-страницы', icon: '📍' },
+  { href: '/admin/orders', label: 'Заказы', icon: '📦' },
   { href: '/admin/leads', label: 'Заявки', icon: '📨' },
   { href: '/admin/users', label: 'Пользователи и роли', icon: '👥' },
   { href: '/admin/log', label: 'Журнал действий', icon: '📋' },

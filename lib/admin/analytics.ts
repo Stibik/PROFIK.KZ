@@ -2,6 +2,21 @@ import 'server-only';
 import { readData } from './store';
 import { products } from '../products';
 
+/** Статистика продаж из заказов (Том 7, п. 7.2: продажи — из PFS APP/Kaspi). */
+export function salesStats() {
+  const orders = readData().orders.filter((o) => o.status !== 'canceled');
+  const sum = orders.reduce((s, o) => s + (o.sum || 0), 0);
+  const count = orders.length;
+  const avg = count ? Math.round(sum / count) : 0;
+  const fmt = (n: number) => new Intl.NumberFormat('ru-RU').format(n);
+  return {
+    sumLabel: fmt(sum) + ' ₸',
+    count,
+    avgLabel: fmt(avg) + ' ₸',
+    kaspiShare: count ? Math.round((orders.filter((o) => o.channel === 'kaspi').length / count) * 100) : 0,
+  };
+}
+
 /**
  * Данные дашборда (Том 7, п. 7.2). В бою: визиты/конверсия — из GA4, заявки и
  * переходы на Kaspi — из базы сайта, статистика продаж — из PFS APP. Здесь —

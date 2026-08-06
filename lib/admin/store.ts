@@ -86,6 +86,19 @@ export interface Lead {
   status: 'new' | 'processed';
 }
 
+/** Заказ (продажа). Источник — ручной ввод или синхронизация с Kaspi. */
+export interface Order {
+  id: string;
+  number: string; // номер заказа (можно указать вручную / из Kaspi)
+  date: string; // дата заказа (YYYY-MM-DD)
+  customer: string;
+  phone?: string;
+  items: string; // состав заказа (свободный текст или «арт×кол-во»)
+  sum: number; // сумма продажи, ₸
+  channel: 'kaspi' | 'site' | 'manual';
+  status: 'new' | 'paid' | 'shipped' | 'done' | 'canceled';
+}
+
 export interface HomeBlock {
   id: string;
   title: string;
@@ -105,6 +118,8 @@ export interface AdminData {
   importedProducts: Record<string, StoredProduct>;
   reviews: Review[];
   leads: Lead[];
+  orders: Order[];
+  settings: { kaspiToken?: string; kaspiShop?: string };
   home: { draft: HomeBlock[]; published: HomeBlock[] };
   log: LogEntry[];
 }
@@ -170,6 +185,12 @@ function seed(): AdminData {
         status: 'new',
       },
     ],
+    orders: [
+      { id: 'o1', number: 'KZ-10231', date: '2026-07-28', customer: 'Клуб «Батыр»', phone: '+7 701 111 22 33', items: 'MSH-120-40 ×4', sum: 312000, channel: 'kaspi', status: 'done' },
+      { id: 'o2', number: 'KZ-10240', date: '2026-07-31', customer: 'Аскар', phone: '+7 705 000 11 22', items: 'PCH-BX-14 ×1', sum: 28000, channel: 'kaspi', status: 'paid' },
+      { id: 'o3', number: 'M-005', date: '2026-08-01', customer: 'ДЮСШ №3', items: 'MAN-BOR-160 ×2', sum: 296000, channel: 'manual', status: 'shipped' },
+    ],
+    settings: {},
     home: { draft: DEFAULT_HOME_BLOCKS, published: DEFAULT_HOME_BLOCKS },
     log: [{ id: 'g1', at: '2026-07-30T09:00:00.000Z', user: 'Владелец', action: 'Первый вход в админку' }],
   };
@@ -188,6 +209,8 @@ function ensure(): AdminData {
     if (!data.categoryOverlays) data.categoryOverlays = {};
     if (!data.productOverlays) data.productOverlays = {};
     if (!data.importedProducts) data.importedProducts = {};
+    if (!data.orders) data.orders = [];
+    if (!data.settings) data.settings = {};
     return data;
   } catch {
     // ФС только для чтения (напр. на serverless) — работаем с сидом в памяти

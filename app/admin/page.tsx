@@ -1,11 +1,13 @@
+import Link from 'next/link';
 import { requireAuth } from '@/lib/admin/auth';
-import { dashboardStats } from '@/lib/admin/analytics';
+import { dashboardStats, salesStats } from '@/lib/admin/analytics';
 import { PageHead, Panel, Badge } from '@/components/admin/ui';
 
 /** Панель управления (Том 7, п. 7.2) — обязательна в первом релизе. */
 export default function AdminDashboard() {
   requireAuth();
   const s = dashboardStats();
+  const sales = salesStats();
   const max = Math.max(...s.trend);
 
   return (
@@ -23,7 +25,28 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Верхний ряд KPI */}
+      {/* Статистика продаж — из заказов (Kaspi/вручную) */}
+      <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Link href="/admin/orders" className="rounded-lg border border-accent/30 bg-accent/5 p-4 transition-colors hover:border-accent/60">
+          <div className="text-xs text-steel-400">Продажи (сумма)</div>
+          <div className="mt-1 text-2xl font-bold text-white">{sales.sumLabel}</div>
+          <div className="mt-1 text-xs text-accent-400">по заказам →</div>
+        </Link>
+        <div className="rounded-lg border border-ink-700 bg-ink-900 p-4">
+          <div className="text-xs text-steel-400">Заказов</div>
+          <div className="mt-1 text-2xl font-bold text-white">{sales.count}</div>
+        </div>
+        <div className="rounded-lg border border-ink-700 bg-ink-900 p-4">
+          <div className="text-xs text-steel-400">Средний чек</div>
+          <div className="mt-1 text-2xl font-bold text-white">{sales.avgLabel}</div>
+        </div>
+        <div className="rounded-lg border border-ink-700 bg-ink-900 p-4">
+          <div className="text-xs text-steel-400">Доля Kaspi</div>
+          <div className="mt-1 text-2xl font-bold text-white">{sales.kaspiShare}%</div>
+        </div>
+      </div>
+
+      {/* Верхний ряд KPI (визиты) */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         {s.kpis.map((k) => (
           <div key={k.label} className="rounded-lg border border-ink-700 bg-ink-900 p-4">

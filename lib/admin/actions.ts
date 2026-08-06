@@ -30,6 +30,67 @@ export async function saveProductOverlay(formData: FormData) {
   redirect('/admin/products?saved=' + encodeURIComponent(sku));
 }
 
+/** Добавить заказ вручную (можно указать номер) — Том 7, раздел «Заказы». */
+export async function addOrder(formData: FormData) {
+  requireAuth();
+  const number = String(formData.get('number') || '').trim();
+  const date = String(formData.get('date') || '').trim();
+  if (!number || !date) redirect('/admin/orders?e=req');
+  writeData((d) => {
+    d.orders.unshift({
+      id: 'o' + Date.now().toString(36),
+      number,
+      date,
+      customer: String(formData.get('customer') || '').trim() || '—',
+      phone: String(formData.get('phone') || '').trim() || undefined,
+      items: String(formData.get('items') || '').trim(),
+      sum: Number(String(formData.get('sum') || '0').replace(/[^\d.-]/g, '')) || 0,
+      channel: (String(formData.get('channel')) as 'kaspi' | 'site' | 'manual') || 'manual',
+      status: (String(formData.get('status')) as 'new' | 'paid' | 'shipped' | 'done' | 'canceled') || 'new',
+    });
+  });
+  logAction('Менеджер по продажам', `Добавлен заказ ${number}`);
+  revalidatePath('/admin/orders');
+  revalidatePath('/admin');
+  redirect('/admin/orders?saved=1');
+}
+
+export async function setOrderStatus(formData: FormData) {
+  requireAuth();
+  const id = String(formData.get('id'));
+  const status = String(formData.get('status')) as 'new' | 'paid' | 'shipped' | 'done' | 'canceled';
+  writeData((d) => {
+    const o = d.orders.find((x) => x.id === id);
+    if (o) o.status = status;
+  });
+  revalidatePath('/admin/orders');
+  revalidatePath('/admin');
+}
+
+export async function deleteOrder(formData: FormData) {
+  requireAuth();
+  const id = String(formData.get('id'));
+  writeData((d) => {
+    d.orders = d.orders.filter((o) => o.id !== id);
+  });
+  logAction('Менеджер по продажам', `Удалён заказ ${id}`);
+  revalidatePath('/admin/orders');
+  revalidatePath('/admin');
+}
+
+export async function saveKaspiSettings(formData: FormData) {
+  requireAuth();
+  writeData((d) => {
+    d.settings = {
+      kaspiToken: String(formData.get('kaspiToken') || '').trim() || undefined,
+      kaspiShop: String(formData.get('kaspiShop') || '').trim() || undefined,
+    };
+  });
+  logAction('Владелец', 'Обновлены настройки интеграции Kaspi');
+  revalidatePath('/admin/orders');
+  redirect('/admin/orders?kaspi=saved');
+}
+
 /** Сохранить контент категории (Том 7): баннер, тексты, порядок, SEO. */
 export async function saveCategoryOverlay(formData: FormData) {
   requireAuth();
